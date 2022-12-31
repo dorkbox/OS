@@ -23,6 +23,7 @@ enum class OSType(name: String, vararg libraryNames: String) {
 
     MacOsX32("macosx_32", ".jnilib", ".dylib"),
     MacOsX64("macosx_64", ".jnilib", ".dylib"),
+    MacOsArm64("macosx_aarch64", ".jnilib", ".dylib"),
     UnixArm("unix_arm", ".so"),
     Unix32("unix_32",".so"),
 
@@ -71,7 +72,7 @@ enum class OSType(name: String, vararg libraryNames: String) {
     val isX86: Boolean
         get() = this == Linux64 || this == LinuxArm64 || this == Windows64 || this == MacOsX64 || this == Linux32 || this == LinuxArm32 || this == Windows32 || this == MacOsX32 || this == Unix32 || this == Unix64 || this == AndroidX86 || this == AndroidX86_64
     val isArm: Boolean
-        get() = this == LinuxArm32 || this == LinuxArm64 || this == AndroidArm56 || this == AndroidArm7 || this == AndroidArm8
+        get() = this == LinuxArm32 || this == LinuxArm64 || this == AndroidArm56 || this == AndroidArm7 || this == AndroidArm8 || this == MacOsArm64 || this == UnixArm
     val isLinux: Boolean
         get() = this == Linux32 || this == Linux64 || this == LinuxArm64 || this == LinuxArm32
     val isUnix: Boolean
@@ -81,7 +82,7 @@ enum class OSType(name: String, vararg libraryNames: String) {
     val isWindows: Boolean
         get() = this == Windows64 || this == Windows32
     val isMacOsX: Boolean
-        get() = this == MacOsX64 || this == MacOsX32
+        get() = this == MacOsX64 || this == MacOsX32 || this == MacOsArm64
     val isAndroid: Boolean
         get() = this == AndroidArm56 || this == AndroidArm7 || this == AndroidX86 || this == AndroidMips || this == AndroidArm8 || this == AndroidX86_64 || this == AndroidMips64
 }

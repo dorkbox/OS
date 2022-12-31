@@ -175,11 +175,14 @@ object OS {
             }
         } else if (osName.startsWith("mac") || osName.startsWith("darwin")) {
             when (osArch) {
-                "x86_64", "aarch64" -> {
+                "x86_64" -> {
                     OSType.MacOsX64
                 }
+                "aarch64" -> {
+                    OSType.MacOsArm64
+                }
                 else -> {
-                    OSType.MacOsX32  // new macosx is no longer 32 bit, but just in case.
+                    OSType.MacOsX32  // new macOS is no longer 32 bit, but just in case.
                 }
             }
         } else if (osName.startsWith("freebsd") ||
