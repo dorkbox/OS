@@ -43,7 +43,7 @@ object OS {
     const val LINE_SEPARATOR_MACOS = "\r"
     const val LINE_SEPARATOR_WINDOWS = "\r\n"
 
-    val TEMP_DIR = File(getProperty("java.io.tmpdir", "temp")).absoluteFile
+    val TEMP_DIR = File(getProperty("java.io.tmpdir", "temp")).absoluteFile!!
 
     /**
      * The currently running MAJOR java version as a NUMBER. For example, "Java version 1.7u45", and converts it into 7, uses JEP 223 for java > 9
@@ -77,7 +77,7 @@ object OS {
     /**
      * Returns the *ORIGINAL* system time zone, before (*IF*) it was changed to UTC
      */
-    val originalTimeZone = TimeZone.getDefault().id
+    val originalTimeZone = TimeZone.getDefault().id!!
 
     /**
      * JVM reported osName, the default (if there is none detected) is 'linux'
@@ -107,7 +107,7 @@ object OS {
                 // android check from https://stackoverflow.com/questions/14859954/android-os-arch-output-for-arm-mips-x86
                 when (osArch) {
                     "armeabi" -> {
-                        OSType.AndroidArm56 // really old/low-end non-hf 32bit cpu
+                        OSType.AndroidArm56 // old/low-end non-hf 32bit cpu
                     }
                     "armeabi-v7a" -> {
                         OSType.AndroidArm7 // 32bit hf cpu
@@ -179,7 +179,7 @@ object OS {
                     OSType.MacOsX64
                 }
                 "aarch64" -> {
-                    OSType.MacOsArm64
+                    OSType.MacOsArm
                 }
                 else -> {
                     OSType.MacOsX32  // new macOS is no longer 32 bit, but just in case.
@@ -394,7 +394,7 @@ object OS {
     val is64bit = type.is64bit
 
     /**
-     * @return true if this is a x86/x64/arm architecture (intel/amd/etc) processor.
+     * @return true if this is x86/x64/arm architecture (intel/amd/etc) processor.
      */
     val isX86 = type.isX86
     val isMips = type.isMips
@@ -498,7 +498,12 @@ object OS {
           Windows 10	                10.0.14393  (2016-07-18)
 
           Windows Server 2016           10.0.14393  (2016-10-12)
-         ```
+          Windows Server 2019 	      	10.0.17763  (2018-10-02)
+          Windows Server 2022 	        10.0.20348  (2021-08-18)
+
+          Windows 11 Original Release 	10.0.22000  (2021-10-05)
+          Windows 11 2022 Update        10.0.22621  (2022-09-20)
+        ```
          * @return the {major}{minor} version of windows, ie: Windows Version 10.0.10586 -> {10}{0}
          */
         val version: IntArray by lazy {
@@ -524,32 +529,32 @@ object OS {
         }
 
         /**
-         * @return is windows XP or equivalent
+         * @return is Windows XP or equivalent
          */
         val isWindowsXP = version[0] == 5
 
         /**
-         * @return is windows Vista or equivalent
+         * @return is Windows Vista or equivalent
          */
         val isWindowsVista = version[0] == 6 && version[1] == 0
 
         /**
-         * @return is windows 7 or equivalent
+         * @return is Windows 7 or equivalent
          */
         val isWindows7 = version[0] == 6 && version[1] == 1
 
         /**
-         * @return is windows 8 or equivalent
+         * @return is Windows 8 or equivalent
          */
         val isWindows8 = version[0] == 6 && version[1] == 2
 
         /**
-         * @return is windows 8.1 or equivalent
+         * @return is Windows 8.1 or equivalent
          */
         val isWindows8_1 = version[0] == 6 && version[1] == 3
 
         /**
-         * @return is greater than or equal to windows 8.1 or equivalent
+         * @return is greater than or equal to Windows 8.1 or equivalent
          */
         val isWindows8_1_plus: Boolean by lazy {
             val version = version
@@ -561,19 +566,24 @@ object OS {
         }
 
         /**
-         * @return is windows 10 or equivalent
+         * @return is Windows 10 or equivalent
          */
         val isWindows10 = version[0] == 10
 
         /**
-         * @return is windows 11 or equivalent
-         */
-        val isWindows11 = version[0] == 11
-
-        /**
-         * @return is windows 10 or greater
+         * @return is Windows 10 or greater
          */
         val isWindows10_plus = version[0] >= 10
+
+        /**
+         * @return is Windows 11 (original release was 21H2)
+         */
+        val isWindows11 = version[0] == 10 && version[1] == 0 && version[2] >= 22000
+
+        /**
+         * @return is Windows 11 update 22H2
+         */
+        val isWindows11_22H2 = version[0] == 10 && version[1] == 0 && version[2] >= 22621
     }
 
     object Unix {
