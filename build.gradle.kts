@@ -26,10 +26,10 @@ gradle.startParameter.showStacktrace = ShowStacktrace.ALWAYS   // always show th
 
 
 plugins {
-    id("com.dorkbox.GradleUtils") version "2.16"
-    id("com.dorkbox.Licensing") version "2.12"
-    id("com.dorkbox.VersionUpdate") version "2.4"
-    id("com.dorkbox.GradlePublish") version "1.12"
+    id("com.dorkbox.GradleUtils") version "3.4.6"
+    id("com.dorkbox.Licensing") version "2.17"
+    id("com.dorkbox.VersionUpdate") version "2.5"
+    id("com.dorkbox.GradlePublish") version "1.13"
 
     kotlin("jvm") version "1.6.10"
 }
@@ -38,7 +38,7 @@ object Extras {
     // set for the project
     const val description = "Information about the system, Java runtime, OS, Window Manager, and Desktop Environment."
     const val group = "com.dorkbox"
-    const val version = "1.0"
+    const val version = "1.1"
 
     // set as project.ext
     const val name = "OS"
@@ -85,6 +85,7 @@ tasks.jar.get().apply {
 dependencies {
     api("com.dorkbox:Updates:1.1")
 }
+
 
 publishToSonatype {
     groupId = Extras.group
