@@ -29,7 +29,7 @@ object OS {
     /**
      * Gets the version number.
      */
-    const val version = "1.1"
+    const val version = "1.2"
 
     init {
         // Add this project to the updates system, which verifies this class + UUID + version information
@@ -43,7 +43,7 @@ object OS {
     const val LINE_SEPARATOR_MACOS = "\r"
     const val LINE_SEPARATOR_WINDOWS = "\r\n"
 
-    val TEMP_DIR = File(getProperty("java.io.tmpdir", "temp")).absoluteFile!!
+    val TEMP_DIR = File(getProperty("java.io.tmpdir", "temp")).absoluteFile
 
     /**
      * The currently running MAJOR java version as a NUMBER. For example, "Java version 1.7u45", and converts it into 7, uses JEP 223 for java > 9
@@ -73,6 +73,11 @@ object OS {
             }
         }
     }
+
+    /**
+     * Returns true if the currently running JVM is using the classpath or modules (JPMS)
+     */
+    val usesJpms = JVM.usesJpms
 
     /**
      * Returns the *ORIGINAL* system time zone, before (*IF*) it was changed to UTC
