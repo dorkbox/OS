@@ -520,7 +520,7 @@ object OS {
                 try {
                     val output = getProperty("os.version")
                     if (output != null) {
-                        val split = output.split("\\.").dropLastWhile { it.isEmpty() }.toTypedArray()
+                        val split = output.split(".").dropLastWhile { it.isEmpty() }.toTypedArray()
                         if (split.size <= 2) {
                             for (i in split.indices) {
                                 version[i] = split[i].toInt()
@@ -746,7 +746,7 @@ object OS {
             if (!isUbuntu) {
                 intArrayOf(0, 0)
             } else if (distribReleaseInfo != null) {
-                val split = distribReleaseInfo!!.split("\\.").toTypedArray()
+                val split = distribReleaseInfo!!.split(".").toTypedArray()
                 intArrayOf(split[0].toInt(), split[1].toInt())
             } else {
                 intArrayOf(0, 0)
@@ -764,7 +764,7 @@ object OS {
             if (!isElementaryOS) {
                 intArrayOf(0, 0)
             } else if (distribReleaseInfo != null) {
-                val split = distribReleaseInfo!!.split("\\.").toTypedArray()
+                val split = distribReleaseInfo!!.split(".").toTypedArray()
                 intArrayOf(split[0].toInt(), split[1].toInt())
             } else {
                 intArrayOf(0, 0)
@@ -966,12 +966,9 @@ object OS {
         }
 
         val isGnome: Boolean by lazy {
-            System.err.println("1")
             if (!isLinux && !isUnix) {
-                System.err.println("2")
                 false
             } else {
-                System.err.println("3")
                 try {
                     // note: some versions of linux can ONLY access "ps a"; FreeBSD and most linux is "ps x"
                     // we try "x" first
@@ -1072,7 +1069,7 @@ object OS {
                 0.0
             } else {
                 // this isn't the BEST way to do this, but it's simple and easy to understand
-                val split = plasmaVersionFull!!.split("\\.", limit = 3).toTypedArray()
+                val split = plasmaVersionFull!!.split(".", limit = 3).toTypedArray()
                 if (split.size > 2) {
                     (split[0] + "." + split[1]).toDouble()
                 } else {
