@@ -928,59 +928,6 @@ object OS {
             X11, WAYLAND, Unknown
         }
 
-        val env: Env by lazy {
-            // if we are running as ROOT, we *** WILL NOT *** have access to  'XDG_CURRENT_DESKTOP'
-            //   *unless env's are preserved, but they are not guaranteed to be
-            // see:  http://askubuntu.com/questions/72549/how-to-determine-which-window-manager-is-running
-            var XDG = getEnv("XDG_CURRENT_DESKTOP")
-            if (XDG == null) {
-                // maybe we are running as root???
-                XDG = "unknown" // try to autodetect if we should use app indicator or gtkstatusicon
-            }
-
-            // Ubuntu 17.10+ is special ... this is ubuntu:GNOME (it now uses wayland instead of x11, so many things have changed...)
-            // So it's gnome, and gnome-shell, but with some caveats
-            // see: https://bugs.launchpad.net/ubuntu/+source/gnome-shell/+bug/1700465
-
-            // BLEH. if gnome-shell is running, IT'S REALLY GNOME!
-            // we must ALWAYS do this check!!
-            if (isGnome) {
-                XDG = "gnome"
-            } else if (isKDE) {
-                // same thing with plasmashell!
-                XDG = "kde"
-            } else if (isXfce) {
-                // https://github.com/dorkbox/SystemTray/issues/100
-                // IGEL linux doesn't say what it is... but we know it's XFCE ... EVEN THOUGH it reports X11!!
-                XDG = "xfce"
-            }
-
-            if ("unity".equals(XDG, ignoreCase = true)) {
-                // Ubuntu Unity is a weird combination. It's "Gnome", but it's not "Gnome Shell".
-                Env.Unity
-            } else if ("unity:unity7".equals(XDG, ignoreCase = true)) {
-                // Ubuntu Unity7 is a weird combination. It's "Gnome", but it's not "Gnome Shell".
-                Env.Unity7
-            } else if ("xfce".equals(XDG, ignoreCase = true)) {
-                Env.XFCE
-            } else if ("lxde".equals(XDG, ignoreCase = true)) {
-                Env.LXDE
-            } else if ("kde".equals(XDG, ignoreCase = true)) {
-                Env.KDE
-            } else if ("pantheon".equals(XDG, ignoreCase = true)) {
-                Env.Pantheon
-            } else if ("gnome".equals(XDG, ignoreCase = true)) {
-                Env.Gnome
-            } else if (isChromeOS) {
-                // maybe it's chromeOS?
-                Env.ChromeOS
-            } else if (isMATE) {
-                Env.MATE
-            } else {
-                Env.Unknown
-            }
-        }
-
         private fun isValidCommand(partialExpectationInOutput: String, commandOutput: String): Boolean {
             return (commandOutput.contains(partialExpectationInOutput) &&
                     !commandOutput.contains("not installed") &&
@@ -1004,11 +951,7 @@ object OS {
 
         val isX11 = type == EnvType.X11
         val isWayland = type == EnvType.WAYLAND
-        val isUnity = isUnity(env)
 
-        fun isUnity(env: Env): Boolean {
-            return env == Env.Unity || env == Env.Unity7
-        }
 
         val isMATE: Boolean by lazy {
             if (!isLinux && !isUnix) {
@@ -1023,9 +966,12 @@ object OS {
         }
 
         val isGnome: Boolean by lazy {
+            System.err.println("1")
             if (!isLinux && !isUnix) {
+                System.err.println("2")
                 false
             } else {
+                System.err.println("3")
                 try {
                     // note: some versions of linux can ONLY access "ps a"; FreeBSD and most linux is "ps x"
                     // we try "x" first
@@ -1226,6 +1172,65 @@ object OS {
             } catch (ignored: Throwable) {
                 return ""
             }
+        }
+
+        val env: Env by lazy {
+            // if we are running as ROOT, we *** WILL NOT *** have access to  'XDG_CURRENT_DESKTOP'
+            //   *unless env's are preserved, but they are not guaranteed to be
+            // see:  http://askubuntu.com/questions/72549/how-to-determine-which-window-manager-is-running
+            var XDG = getEnv("XDG_CURRENT_DESKTOP")
+            if (XDG == null) {
+                // maybe we are running as root???
+                XDG = "unknown" // try to autodetect if we should use app indicator or gtkstatusicon
+            }
+
+            // Ubuntu 17.10+ is special ... this is ubuntu:GNOME (it now uses wayland instead of x11, so many things have changed...)
+            // So it's gnome, and gnome-shell, but with some caveats
+            // see: https://bugs.launchpad.net/ubuntu/+source/gnome-shell/+bug/1700465
+
+            // BLEH. if gnome-shell is running, IT'S REALLY GNOME!
+            // we must ALWAYS do this check!!
+            if (isGnome) {
+                XDG = "gnome"
+            } else if (isKDE) {
+                // same thing with plasmashell!
+                XDG = "kde"
+            } else if (isXfce) {
+                // https://github.com/dorkbox/SystemTray/issues/100
+                // IGEL linux doesn't say what it is... but we know it's XFCE ... EVEN THOUGH it reports X11!!
+                XDG = "xfce"
+            }
+
+            if ("unity".equals(XDG, ignoreCase = true)) {
+                // Ubuntu Unity is a weird combination. It's "Gnome", but it's not "Gnome Shell".
+                Env.Unity
+            } else if ("unity:unity7".equals(XDG, ignoreCase = true)) {
+                // Ubuntu Unity7 is a weird combination. It's "Gnome", but it's not "Gnome Shell".
+                Env.Unity7
+            } else if ("xfce".equals(XDG, ignoreCase = true)) {
+                Env.XFCE
+            } else if ("lxde".equals(XDG, ignoreCase = true)) {
+                Env.LXDE
+            } else if ("kde".equals(XDG, ignoreCase = true)) {
+                Env.KDE
+            } else if ("pantheon".equals(XDG, ignoreCase = true)) {
+                Env.Pantheon
+            } else if ("gnome".equals(XDG, ignoreCase = true)) {
+                Env.Gnome
+            } else if (isChromeOS) {
+                // maybe it's chromeOS?
+                Env.ChromeOS
+            } else if (isMATE) {
+                Env.MATE
+            } else {
+                Env.Unknown
+            }
+        }
+
+        val isUnity = isUnity(env)
+
+        fun isUnity(env: Env): Boolean {
+            return env == Env.Unity || env == Env.Unity7
         }
     }
 }
