@@ -20,7 +20,7 @@ Maven Info
     <dependency>
       <groupId>com.dorkbox</groupId>
       <artifactId>OS</artifactId>
-      <version>1.4</version>
+      <version>1.5</version>
     </dependency>
 </dependencies>
 ```
@@ -30,7 +30,7 @@ Gradle Info
 ```
 dependencies {
     ...
-    implementation("com.dorkbox:OS:1.4")
+    implementation("com.dorkbox:OS:1.5")
 }
 ```
 

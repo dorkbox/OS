@@ -38,7 +38,7 @@ object Extras {
     // set for the project
     const val description = "Information about the system, Java runtime, OS, Window Manager, and Desktop Environment."
     const val group = "com.dorkbox"
-    const val version = "1.4"
+    const val version = "1.5"
 
     // set as project.ext
     const val name = "OS"
