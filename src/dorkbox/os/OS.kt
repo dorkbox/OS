@@ -513,18 +513,20 @@ object OS {
          */
         val version: IntArray by lazy {
             if (!isWindows) {
-                intArrayOf(0, 0)
+                intArrayOf(0, 0, 0)
             } else {
-                val version = IntArray(2)
+                val version = IntArray(3)
 
                 try {
-                    val output = getProperty("os.version")
-                    if (output != null) {
-                        val split = output.split(".").dropLastWhile { it.isEmpty() }.toTypedArray()
-                        if (split.size <= 2) {
-                            for (i in split.indices) {
-                                version[i] = split[i].toInt()
-                            }
+                    val output = execute("cmd.exe", "/c", "ver")
+                    if (output.isNotEmpty()) {
+                        val index = output.indexOf("Version")
+                        val versionInfoOnly = output.substring(index + 8, output.indexOf("]"))
+                        val split = versionInfoOnly.split(".").toTypedArray()
+                        if (split.size == 4) {
+                            version[0] = split[0].toInt()
+                            version[1] = split[1].toInt()
+                            version[2] = split[2].toInt()
                         }
                     }
                 } catch (ignored: Throwable) {
