@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 dorkbox, llc
+ * Copyright 2023 dorkbox, llc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ package dorkbox.os
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
-import java.security.AccessController
-import java.security.PrivilegedAction
 import java.util.*
 import java.util.concurrent.*
 
@@ -244,18 +242,31 @@ object OS {
     }
 
     /**
+     * Clears/removes the property from the system properties.
+     */
+    fun clearProperty(property: String) {
+        System.clearProperty(property)
+    }
+
+    /**
+     * @return the previous value of the system property, or 'null' if it did not have one.
+     */
+    fun setProperty(property: String, value: String): String? {
+        return System.setProperty(property, value)
+    }
+
+    /**
+     * @return the previous value of the system property, or the [defaultValue] if it did not have one.
+     */
+    fun setProperty(property: String, value: String, defaultValue: String): String {
+        return System.setProperty(property, value) ?: defaultValue
+    }
+
+    /**
      * @return the value of the Java system property with the specified `property`, or null if it does not exist.
      */
     fun getProperty(property: String): String? {
-        return try {
-            if (System.getSecurityManager() == null) {
-                System.getProperty(property, null)
-            } else {
-                AccessController.doPrivileged(PrivilegedAction { System.getProperty(property, null) })
-            }
-        } catch (ignored: Exception) {
-            null
-        }
+        return System.getProperty(property, null)
     }
 
     /**
@@ -263,45 +274,29 @@ object OS {
      * specified default value if the property access fails.
      */
     fun getProperty(property: String, defaultValue: String): String {
-        return try {
-            if (System.getSecurityManager() == null) {
-                System.getProperty(property, defaultValue)
-            } else {
-                AccessController.doPrivileged(PrivilegedAction { System.getProperty(property, defaultValue) })
-            }
-        } catch (ignored: Exception) {
-            defaultValue
-        }
+        return System.getProperty(property, defaultValue)
+    }
+
+    /**
+     * @return the Java system properties in a safe way.
+     */
+    fun getProperties(): Map<String, String> {
+        @Suppress("UNCHECKED_CAST")
+        return System.getProperties().toMap() as Map<String, String>
     }
 
     /**
      * @return the System Environment property in a safe way for a given property, or null if it does not exist.
      */
     fun getEnv(): Map<String, String> {
-        return try {
-            if (System.getSecurityManager() == null) {
-                System.getenv()
-            } else {
-                AccessController.doPrivileged(PrivilegedAction { System.getenv() })
-            }
-        } catch (ignored: Exception) {
-            mapOf()
-        }
+        return System.getenv()
     }
 
     /**
      * @return the System Environment property in a safe way for a given property, or null if it does not exist.
      */
     fun getEnv(property: String): String? {
-        return try {
-            if (System.getSecurityManager() == null) {
-                System.getenv(property)
-            } else {
-                AccessController.doPrivileged(PrivilegedAction { System.getenv(property) })
-            }
-        } catch (ignored: Exception) {
-            null
-        }
+        return System.getenv(property)
     }
 
     /**
@@ -309,7 +304,7 @@ object OS {
      * specified default value if the property access fails.
      */
     fun getEnv(property: String, defaultValue: String): String {
-        return getEnv(property) ?: defaultValue
+        return getEnv(property, defaultValue)
     }
 
 
@@ -319,7 +314,7 @@ object OS {
      */
     fun getBoolean(property: String, defaultValue: Boolean): Boolean {
         var value = getProperty(property) ?: return defaultValue
-        value = value.trim { it <= ' ' }.lowercase(Locale.getDefault())
+        value = value.trim().lowercase(Locale.getDefault())
         if (value.isEmpty()) {
             return defaultValue
         }
@@ -339,7 +334,7 @@ object OS {
      */
     fun getInt(property: String, defaultValue: Int): Int {
         var value = getProperty(property) ?: return defaultValue
-        value = value.trim { it <= ' ' }
+        value = value.trim()
 
         try {
             return value.toInt()
@@ -354,7 +349,7 @@ object OS {
      */
     fun getLong(property: String, defaultValue: Long): Long {
         var value = getProperty(property) ?: return defaultValue
-        value = value.trim { it <= ' ' }
+        value = value.trim()
 
         try {
             return value.toLong()
@@ -369,7 +364,7 @@ object OS {
      */
     fun getFloat(property: String, defaultValue: Float): Float {
         var value = getProperty(property) ?: return defaultValue
-        value = value.trim { it <= ' ' }
+        value = value.trim()
 
         try {
             return value.toFloat()
@@ -384,7 +379,7 @@ object OS {
      */
     fun getDouble(property: String, defaultValue: Double): Double {
         var value = getProperty(property) ?: return defaultValue
-        value = value.trim { it <= ' ' }
+        value = value.trim()
 
         try {
             return value.toDouble()
