@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 dorkbox, llc
+ * Copyright 2023 dorkbox, llc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ enum class OSType(name: String, vararg libraryNames: String) {
 
     val is64bit: Boolean
     get() {
-        return this == Linux64 || this == LinuxArm64 || this == Windows64 || this == MacOsX64 || this == AndroidArm8 || this == AndroidX86_64 || this == AndroidMips64 || this == Unix64
+        return this == Linux64 || this == LinuxArm64 || this == Windows64 || this == MacOsX64 || this == MacOsArm || this == AndroidArm8 || this == AndroidX86_64 || this == AndroidMips64 || this == Unix64
     }
 
     val is32bit: Boolean
