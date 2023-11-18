@@ -438,12 +438,13 @@ object OS {
      * This is based on an aggregate of the answers provided here: [https://stackoverflow.com/questions/35421699/how-to-invoke-external-command-from-within-kotlin-code]
      */
     private fun execute(vararg args: String, timeout: Long = 60): String {
-        return ProcessBuilder(args.toList())
+        val process = ProcessBuilder(args.toList())
             .redirectOutput(ProcessBuilder.Redirect.PIPE)
             .redirectError(ProcessBuilder.Redirect.PIPE)
             .start()
-            .apply { waitFor(timeout, TimeUnit.SECONDS) }
-            .inputStream.bufferedReader().readText().trim()
+        val text = process.inputStream.bufferedReader().readText().trim()
+        process.waitFor(timeout, TimeUnit.SECONDS)
+        return text
     }
 
     // true if the exit code is 0 (meaning standard exit)
