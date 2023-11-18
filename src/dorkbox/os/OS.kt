@@ -1018,8 +1018,7 @@ object OS {
             val XDG = getEnv("XDG_CURRENT_DESKTOP")
             if (XDG == null) {
                 // Check if plasmashell is running, if it is -- then we are most likely KDE
-                val plasmaVersion = plasmaVersion
-                plasmaVersion > 0
+                plasmaVersionFull != null && !plasmaVersionFull!!.startsWith("0")
             } else {
                 "kde".equals(XDG, ignoreCase = true)
             }
@@ -1052,25 +1051,6 @@ object OS {
                     }
                 } catch (ignored: Throwable) {
                     null
-                }
-            }
-        }
-
-        /**
-         * The first two decimal places of the version number of plasma shell (if running) as a double.
-         *
-         * @return cannot represent '5.6.5' as a number, so we return just the first two decimal places instead
-         */
-        val plasmaVersion: Double by lazy {
-            if (plasmaVersionFull == null || plasmaVersionFull!!.startsWith("0")) {
-                0.0
-            } else {
-                // this isn't the BEST way to do this, but it's simple and easy to understand
-                val split = plasmaVersionFull!!.split(".", limit = 3).toTypedArray()
-                if (split.size > 2) {
-                    (split[0] + "." + split[1]).toDouble()
-                } else {
-                    split[0].toDouble()
                 }
             }
         }
