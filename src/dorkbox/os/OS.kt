@@ -516,8 +516,17 @@ object OS {
                 try {
                     val output = execute("cmd.exe", "/c", "ver")
                     if (output.isNotEmpty()) {
-                        val index = output.indexOf("Version")
-                        val versionInfoOnly = output.substring(index + 8, output.indexOf("]"))
+                        // OF NOTE: It is possible to have a different encoding of windows, where the word "Version" doesn't exist.
+                        //  in this case, we'll just take the next set of numbers available
+                        // Microsoft Windows [Version 10.0.22000.2600]
+                        // Microsoft Windows [??? 10.0.22621.2283]  (different encoding)
+
+                        // slice out the [] because we don't want to include windows product names! (like Windows 2012) in the name!
+                        // I don't specifically have this version to test, however it is easy enough to guard against.
+                        val shortenedOutput = output.substring(output.indexOf("[") + 1, output.indexOf("]"))
+                        val index = shortenedOutput.indexOfFirst { it.isDigit() }
+                        val versionInfoOnly = shortenedOutput.substring(index, shortenedOutput.length)
+
                         val split = versionInfoOnly.split(".").toTypedArray()
                         if (split.size == 4) {
                             version[0] = split[0].toInt()
