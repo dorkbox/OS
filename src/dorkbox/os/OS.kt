@@ -834,7 +834,7 @@ object OS {
                 if (data == null) {
                     // reading the file didn't work for whatever reason...
                     // uname -v
-                    data = execute("uname", "-v").contains("-Microsoft")
+                    data = execute("/usr/bin/uname", "-v").contains("-Microsoft")
                 }
 
                 if (data == true) {
@@ -855,7 +855,7 @@ object OS {
                 // running as root (also can be "sudo" user). A lot slower that checking a sys env, but this is guaranteed to work
                 try {
                     // id -u
-                    isSudoOrRoot = "0" == execute("id", "-u")
+                    isSudoOrRoot = "0" == execute("/usr/bin/id", "-u")
                 } catch (ignored: Throwable) {
                 }
             }
@@ -895,7 +895,7 @@ object OS {
                 // dpkg-query: package 'libappindicator3' is not installed
                 val is_dpkg = File("/usr/bin/dpkg").canExecute()
                 if (is_dpkg) {
-                    return !execute("dpkg", "-L", packageName).contains("is not installed")
+                    return !execute("/usr/bin/dpkg", "-L", packageName).contains("is not installed")
                 }
 
                 // rpm
@@ -903,7 +903,7 @@ object OS {
                 // package libappindicator234 is not installed
                 val is_rpm = File("/usr/bin/rpm").canExecute()
                 if (is_rpm) {
-                    return !execute("rpm", "-q", packageName).contains("is not installed")
+                    return !execute("/usr/bin/rpm", "-q", packageName).contains("is not installed")
                 }
 
 
@@ -914,7 +914,7 @@ object OS {
                     try {
                         // use the exit code to determine if the packages exists on the system
                         // 0 the package exists, 1 it doesn't
-                        return executeStatus("pacman", "-Qi", packageName)
+                        return executeStatus("/usr/bin/pacman", "-Qi", packageName)
 
                         //return start == 0
                     } catch (ignored: Exception) {
@@ -981,12 +981,12 @@ object OS {
                     // we try "x" first
 
                     // ps x | grep gnome-shell
-                    var contains = execute("ps", "x").contains("gnome-shell")
+                    var contains = execute("/usr/bin/ps", "x").contains("gnome-shell")
                     if (!contains && isLinux) {
                         // only try again if we are linux
 
                         // ps a | grep gnome-shell
-                        contains = execute("ps", "a").contains("gnome-shell")
+                        contains = execute("/usr/bin/ps", "a").contains("gnome-shell")
                     }
                     contains
                 } catch (ignored: Throwable) {
@@ -1004,7 +1004,7 @@ object OS {
             } else {
                 try {
                     // gnome-shell --version
-                    val versionString = execute("gnome-shell", "--version")
+                    val versionString = execute("/usr/bin/gnome-shell", "--version")
                     if (versionString.isNotEmpty()) {
                         // GNOME Shell 3.14.1
                         val version = versionString.replace("[^\\d.]".toRegex(), "")
@@ -1046,7 +1046,7 @@ object OS {
                 try {
                     // plasma-desktop -v
                     // plasmashell --version
-                    val output = execute("plasmashell", "--version")
+                    val output = execute("/usr/bin/plasmashell", "--version")
                     if (output.isNotEmpty()) {
                         // DEFAULT icon size is 16. KDE is bananas on what they did with tray icon scale
                         // should be: plasmashell 5.6.5   or something
@@ -1074,12 +1074,12 @@ object OS {
                     // we try "x" first
 
                     // ps x | grep xfce
-                    var contains = execute("ps", "x").contains("xfce")
+                    var contains = execute("/usr/bin/ps", "x").contains("xfce")
                     if (!contains && isLinux) {
                         // only try again if we are linux
 
                         // ps a | grep gnome-shell
-                        contains = execute("ps", "a").contains("xfce")
+                        contains = execute("/usr/bin/ps", "a").contains("xfce")
                     }
                     contains
                 } catch (ignored: Throwable) {
@@ -1100,7 +1100,7 @@ object OS {
             } else {
                 try {
                     // nautilus --version
-                    val output = execute("nautilus", "--version")
+                    val output = execute("/usr/bin/nautilus", "--version")
                     if (output.isNotEmpty()) {
                         // should be: GNOME nautilus 3.14.3   or something
                         val s = "GNOME nautilus "
@@ -1120,7 +1120,7 @@ object OS {
             } else {
                 try {
                     // ps aux | grep chromeos
-                    execute("ps", "aux").contains("chromeos")
+                    execute("/usr/bin/ps", "aux").contains("chromeos")
                 } catch (ignored: Throwable) {
                     false
                 }
@@ -1140,7 +1140,7 @@ object OS {
             try {
                 // xfconf-query -c xfce4-panel -l
                 val commands: MutableList<String> = ArrayList()
-                commands.add("xfconf-query")
+                commands.add("/usr/bin/xfconf-query")
                 commands.add("-c")
                 commands.add(channel)
                 if (property != null) {
