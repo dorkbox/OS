@@ -27,7 +27,7 @@ object OS {
     /**
      * Gets the version number.
      */
-    const val version = "1.11"
+    const val version = "2.0"
 
     init {
         // Add this project to the updates system, which verifies this class + UUID + version information

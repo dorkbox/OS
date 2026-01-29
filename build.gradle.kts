@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 dorkbox, llc
+ * Copyright 2026 dorkbox, llc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +24,19 @@ gradle.startParameter.showStacktrace = ShowStacktrace.ALWAYS   // always show th
 
 
 plugins {
-    id("com.dorkbox.GradleUtils") version "3.18"
-    id("com.dorkbox.Licensing") version "2.22"
-    id("com.dorkbox.VersionUpdate") version "2.8"
-    id("com.dorkbox.GradlePublish") version "1.22"
+    id("com.dorkbox.GradleUtils") version "4.3"
+    id("com.dorkbox.Licensing") version "3.1"
+    id("com.dorkbox.VersionUpdate") version "3.0"
+    id("com.dorkbox.GradlePublish") version "2.0"
 
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "2.3.0"
 }
 
 object Extras {
     // set for the project
     const val description = "Information about the system, Java runtime, OS, Window Manager, and Desktop Environment."
     const val group = "com.dorkbox"
-    const val version = "1.11"
+    const val version = "2.0"
 
     // set as project.ext
     const val name = "OS"
@@ -51,9 +51,7 @@ object Extras {
 ///////////////////////////////
 GradleUtils.load("$projectDir/../../gradle.properties", Extras)
 GradleUtils.defaults()
-GradleUtils.compileConfiguration(JavaVersion.VERSION_1_8)
-GradleUtils.jpms(JavaVersion.VERSION_1_9)
-
+GradleUtils.compileConfiguration(JavaVersion.VERSION_25)
 
 licensing {
     license(License.APACHE_2) {
@@ -79,11 +77,11 @@ tasks.jar.get().apply {
 }
 
 dependencies {
-    api("com.dorkbox:Updates:1.1")
+    api("com.dorkbox:Updates:1.3")
 }
 
 
-publishToSonatype {
+mavenCentral {
     groupId = Extras.group
     artifactId = Extras.id
     version = Extras.version
