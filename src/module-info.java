@@ -4,6 +4,4 @@ module dorkbox.os {
     requires transitive dorkbox.updates;
 
     requires transitive kotlin.stdlib;
-
-    requires java.base;
 }
